@@ -1,0 +1,1 @@
+FROM elastic/elasticsearch:6.4.0
