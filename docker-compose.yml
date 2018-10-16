@@ -1,7 +1,18 @@
 # https://github.com/deviantony/docker-elk/blob/master/docker-compose.yml
-version: '2'
+version: '3'
 
 services:
+  
+  vault:
+    # docker run --cap-add=IPC_LOCK -d --name=dev-vault vault
+    image:
+      vault
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 8200:8200
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${CASTLE_VAULT_ROOT_TOKEN_ID}
 
   elasticsearch:
     # https://stackoverflow.com/questions/41192680/update-max-map-count-for-elasticsearch-docker-container-mac-host
