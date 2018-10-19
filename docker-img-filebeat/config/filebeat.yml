@@ -1,0 +1,11 @@
+filebeat.inputs:
+- type: docker
+  containers.ids: '*'
+  containers.path: /mnt/sda1/var/lib/docker/containers
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+#  index: "docker_containers-%{+yyyy.MM.dd}"
+#setup.template:
+#  name: 'docker_containers'
+#  pattern: 'docker_containers-*'
