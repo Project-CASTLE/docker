@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    #hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.example.com'
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '80:80'
+      - '443:443'
+      - '2222:22'
+    volumes:
+      - '${HOME}/gitlab/config:/etc/gitlab'
+      - '${HOME}/gitlab/logs:/var/log/gitlab'
+      - '${HOME}/gitlab/data:/var/opt/gitlab'
+    networks:
+      - castle
+    privileged: true
+
+networks:
+
+  castle:
+    driver: bridge
