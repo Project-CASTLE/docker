@@ -46,6 +46,7 @@ services:
       - ./docker-img-logstash/config/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - "5000:5000"
+      - "5044:5044"
       - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
@@ -74,7 +75,8 @@ services:
     logging:
       driver: "json-file"
     volumes:
-      - ./docker-img-filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
     networks:
       - castle
     depends_on:
