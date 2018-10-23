@@ -1,11 +1,9 @@
 filebeat.inputs:
 - type: docker
   containers.ids: '*'
-  containers.path: /mnt/sda1/var/lib/docker/containers
+  containers.path: /var/lib/docker/containers
+  processors:
+    - add_docker_metadata: ~
 
-output.elasticsearch:
-  hosts: ["http://elasticsearch:9200"]
-#  index: "docker_containers-%{+yyyy.MM.dd}"
-#setup.template:
-#  name: 'docker_containers'
-#  pattern: 'docker_containers-*'
+output.logstash:
+  hosts: ["logstash:5044"]
