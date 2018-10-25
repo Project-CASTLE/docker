@@ -102,6 +102,68 @@ services:
       - castle
     privileged: true
 
+  #
+  # Mattermost
+  #
+  mattermost-db:
+    build: 
+      context: docker-img-mattermost-db/
+    read_only: true
+    restart: unless-stopped
+    volumes:
+      - ${HOME}/mattermost/db/var/lib/postgresql/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - POSTGRES_USER=mmuser
+      - POSTGRES_PASSWORD=mmuser_password
+      - POSTGRES_DB=mattermost
+    networks:
+      - castle
+
+  mattermost-app:
+    build:
+      context: docker-img-mattermost-app/
+      # uncomment following lines for team edition or change UID/GID
+      # args:
+      #   - edition=team
+      #   - PUID=1000
+      #   - PGID=1000
+    restart: unless-stopped
+    volumes:
+      - ${HOME}/mattermost/app/config:/mattermost/config:rw
+      - ${HOME}/mattermost/app/data:/mattermost/data:rw
+      - ${HOME}/mattermost/app/logs:/mattermost/logs:rw
+      - ${HOME}/mattermost/app/plugins:/mattermost/plugins:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      # set same as db credentials and dbname
+      - MM_USERNAME=mmuser
+      - MM_PASSWORD=mmuser_password
+      - MM_DBNAME=mattermost
+      # in case your config is not in default location
+      #- MM_CONFIG=/mattermost/config/config.json
+    networks:
+      - castle
+
+  mattermost-web:
+    build: 
+      context: docker-img-mattermost-web/
+    ports:
+      - "8080:80"
+      - "8443:443"
+    read_only: true
+    restart: unless-stopped
+    volumes:
+      # This directory must have cert files if you want to enable SSL
+      - ${HOME}/mattermost/web/cert:/cert:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - APP_HOST=mattermost-app
+      - APP_PORT=8000
+    #  - MATTERMOST_ENABLE_SSL=true
+    networks:
+      - castle
+
 networks:
 
   castle:
