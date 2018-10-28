@@ -17,7 +17,10 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: ${CASTLE_VAULT_ROOT_TOKEN_ID}
     networks:
       - castle
-      
+
+  #
+  # ELK
+  #     
   elasticsearch:
     # https://stackoverflow.com/questions/41192680/update-max-map-count-for-elasticsearch-docker-container-mac-host
     # docker-machine ssh
@@ -82,6 +85,9 @@ services:
     depends_on:
       - elasticsearch
 
+  # 
+  # Gitlab
+  #  
   gitlab:
     image: 'gitlab/gitlab-ce:latest'
     restart: always
@@ -105,6 +111,9 @@ services:
   #
   # Mattermost
   #
+  # docker-compose build
+  # mkdir -pv ./volumes/app/mattermost/{data,logs,config}
+  # chown -R 2000:2000 ./volumes/app/mattermost/
   mattermost-db:
     build: 
       context: docker-img-mattermost-db/
@@ -136,6 +145,8 @@ services:
       - ${HOME}/mattermost/app/plugins:/mattermost/plugins:rw
       - /etc/localtime:/etc/localtime:ro
     environment:
+      - DB_HOST=mattermost-db
+      - DB_PORT=5432
       # set same as db credentials and dbname
       - MM_USERNAME=mmuser
       - MM_PASSWORD=mmuser_password
